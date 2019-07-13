@@ -39,8 +39,8 @@ def loss(pred, label):
     return tf2.reduce_mean(tf2.square(pred - label))
 
 #%%
-# @tf2.function
-def train(model, inputs, outputs, lr, loss = loss, opt = tf2.optimizers.Adam(0.1)):
+@tf2.function
+def train(model, inputs, outputs, lr, loss = loss, opt = tf2.optimizers.SGD(0.01)):
     with tf2.GradientTape() as g:
         # g.watch(model.W)
         closs = loss(model(X), y)
@@ -48,7 +48,7 @@ def train(model, inputs, outputs, lr, loss = loss, opt = tf2.optimizers.Adam(0.1
     dW = g.gradient(closs, model.W)
     # model.W -= lr * dW
     # model.W.assign_sub(lr * dW)
-    opt.apply_gradients(zip([dW], [m.W]))
+    opt.apply_gradients(zip([dW], [model.W]))
     return closs
 
 #%%
