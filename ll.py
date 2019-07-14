@@ -1,7 +1,6 @@
 #%%
 from tensorflow_probability import edward2 as ed
 import tensorflow as tf
-tf.enable_eager_execution()
 
 #%%
 # @ed.make_log_joint_fn

@@ -25,6 +25,7 @@ y_green = np.array([0] * sample_n)
 
 plt.scatter(x_red[:, 0], x_red[:, 1], c = 'red' , marker='.', s = 30)
 plt.scatter(x_green[:, 0], x_green[:, 1], c = 'green', marker='.', s = 30)
+plt.show()
 
 X = np.concatenate([x_red, x_green])
 X = np.concatenate([np.ones((sample_n*2, 1)), X], axis = 1)
@@ -86,12 +87,12 @@ for i in epochs:
 
 #%%
 plt.plot(epochs, l)
-# plt.show()
+plt.show()
 #%%
 x = np.arange(-1, 3, step = 0.01)
 y = - m.W[0,0] / m.W[2, 0] - m.W[1, 0] * x/ m.W[2, 0]
 plt.scatter(x_red[:, 0], x_red[:, 1], c = 'red' , marker='.', s = 30)
 plt.scatter(x_green[:, 0], x_green[:, 1], c = 'green', marker='.', s = 30)
 plt.plot(x, y)
-
+plt.show()
 #%%
