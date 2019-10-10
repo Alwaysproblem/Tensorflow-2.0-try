@@ -39,10 +39,11 @@ assert y.shape == (sample_n*2, 1)
 #%%
 class LogR():
     def __init__(self):
-        self.W = tf2.Variable(np.ones((3, 1)))
+        self.W = tf2.Variable(np.random.randn(3, 1))
 
     def __call__(self, x):
         return tf2.sigmoid(x @ self.W)
+        # return x @ self.W
 
 #%%
 def loss(pred, label):
@@ -51,16 +52,24 @@ def loss(pred, label):
 def loss_np(pred, label):
     return tf2.reduce_mean(- y[None, :]*np.log(pred) - (1.0 - y[None, :]) * np.log(1.0 - pred))
 
+def loss_svm(pred, label, model):
+    label = tf2.cast(label, tf2.float32)
+    # label = (label - 0.5) * 2
+    pred = tf2.cast(pred, tf2.float32)
+    o = tf2.reduce_mean(tf2.maximum(0.0, 1.0 - tf2.cast(pred * label, tf2.float32)))  + tf2.cast(0.0 * (tf2.transpose(model.W) @ model.W), tf2.float32)
+    return tf2.reshape(o, (1,))
+
 #%%
-def sigmoid(X):
-    return 1.0 / 1.0 + np.exp(-X)
+# def sigmoid(X):
+#     return 1.0 / 1.0 + np.exp(-X)
 
 #%%
 @tf2.function
 def train(model, inputs, outputs, loss = loss, opt = tf2.optimizers.Adam(0.1)):
     with tf2.GradientTape() as g:
-        # g.watch(model.W)
+        g.watch(model.W)
         closs = loss(model(X), outputs)
+        # closs = loss_svm(model(X), outputs, model)
     #     # tf2.print(closs)
     dW = g.gradient(closs, model.W)
     # model.W -= lr * dW
