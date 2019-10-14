@@ -14,7 +14,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 noise = np.random.randn(10, 1)
 # print(noise.shape)
-W = np.array([[5, 3]]).T
+W = np.array([[5., 3.]]).T
 x = np.array(np.arange(10))[None, :].T
 # print(x.shape)
 x_ = np.ones((10, 1))
@@ -24,13 +24,14 @@ print(X.shape, W.shape)
 y = X @ W + noise
 print(y)
 
-plt.scatter(x, y, s = 10, marker='o', c = 'red')
+# plt.scatter(x, y, s = 10, marker='o', c = 'red')
+# plt.show()
 
 #%%
 class linearM(tf2.keras.Model):
     def __init__(self):
         super().__init__()
-        self.W = tf2.Variable(np.ones((2,1)))
+        self.W = tf2.cast(tf2.Variable(np.ones((2,1))), tf2.float32)
     
     def call(self, x):
         return x @ self.W
@@ -45,6 +46,8 @@ opt = tf2.keras.optimizers.Adam(0.1)
 # @tf2.function
 def train(model, inputs, outputs, loss = loss, opt = opt):
     # can directly use the mminimize funciton
+    inputs = tf2.cast(inputs, tf2.float32)
+
     Loss = loss(model(inputs), outputs)
     opt.minimize(lambda: loss(model(inputs), outputs), model.trainable_variables)
     
