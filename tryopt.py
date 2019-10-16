@@ -51,14 +51,17 @@ def train(model, inputs, outputs, loss = loss, opt = opt):
     return a
 
 #%%
+writer = tf2.summary.create_file_writer(logdir + "/logs/" + time.strftime('%Y-%m-%d_%H-%M-%S'))
+
+tf2.summary.trace_on(graph = True, profiler = True)
 m = linearM()
+with writer.as_default():
+    tf2.summary.trace_export(name="Linear", step=0, profiler_outdir = logdir)
+
 W_hat_l = [m.W.numpy()]
 cl = []
 epochs = np.arange(500)
 
-writer = tf2.summary.create_file_writer(logdir + "/logs/" + time.strftime('%Y-%m-%d_%H-%M-%S'))
-
-@tf2.function
 def to(step, name, data):
     with writer.as_default():
         tf2.summary.scalar(name, data, step=step)
@@ -68,15 +71,22 @@ def tfHis(step, data):
     with writer.as_default():
         tf2.summary.histogram("w", data, step=step)
 
+def tfGraph(step, name):
+    tf2.summary.trace_on(graph = True, profiler = True)
+    with writer.as_default():
+        tf2.summary.trace_export(name="Linear", step=step, profiler_outdir = logdir)
 #%%
 for i in epochs:
     closs = train(m, X, y)
     to(i, "closs", closs.numpy())
     tfHis(i, m.W.numpy())
+    # tfGraph(0, "Linear")
     cl.append(closs)
     W_hat_l.append(m.W.numpy())
     print('Epoch %2d: W=%1.2f b=%1.2f, loss=%2.5f' %(i, m.W[0, 0], m.W[1,0], closs))
     writer.flush()
+
+
 
 W_hat_l = np.concatenate(W_hat_l, axis = 1)
 
