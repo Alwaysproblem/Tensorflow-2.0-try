@@ -68,6 +68,8 @@ savedir = './save/2'
 tf.saved_model.save(model, savedir)
 
 
+
+# shshsdhhahdhdh
 # new_model = tf.saved_model.load(savedir)
 # print(new_model.summary())
 # print(new_model(np.array([[1., 1.], [1., 2.]])))
