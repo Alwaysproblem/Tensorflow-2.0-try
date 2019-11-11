@@ -67,6 +67,9 @@ print(model.predict(np.array([[1., 1.], [1., 2.]])))
 savedir = './save/2'
 tf.saved_model.save(model, savedir)
 
+# echo "deb [arch=amd64] http://storage.googleapis.com/tensorflow-serving-apt stable tensorflow-model-server tensorflow-model-server-universal" | sudo tee /etc/apt/sources.list.d/tensorflow-serving.list && \
+# curl https://storage.googleapis.com/tensorflow-serving-apt/tensorflow-serving.release.pub.gpg | sudo apt-key add -
+
 
 # new_model = tf.saved_model.load(savedir)
 # print(new_model.summary())
