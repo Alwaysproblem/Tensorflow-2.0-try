@@ -125,7 +125,7 @@ class TFRecordLoader(FileTypeLoader):
 
     @property
     def label(self):
-        return self.target
+        return self.label_name
 
 
 class CSVLoader(FileTypeLoader):
@@ -139,6 +139,9 @@ class CSVLoader(FileTypeLoader):
                 select_columns=None,
                 field_delim=',',
                 varlen_field_delim='|',
+                varlen_ragged=True,
+                varlen_filld_value=None,
+                varlen_max_len=None,
                 use_quote_delim=True,
                 na_value='',
                 header=True,
@@ -154,18 +157,6 @@ class CSVLoader(FileTypeLoader):
                 ignore_errors=False,
                 use_hash=False,
                 **kwargs):
-        self.typedic = {
-            'stringv': tf.string,
-            'string': tf.string,
-            'int32': tf.int32,
-            'int64': tf.int64,
-            'float32': tf.float32,
-            'float64': tf.float64,
-            'int32List': tf.int32,
-            'int64List': tf.int64,
-            'float32List': tf.float32,
-            'float64List': tf.float64,
-        }
         """
         Args:
             file_pattern: List of files or patterns of file paths containing CSV records. See tf.io.gfile.glob for pattern rules.
@@ -194,15 +185,30 @@ class CSVLoader(FileTypeLoader):
         Returns:
             A dataset, where each element is a (features, labels) tuple that corresponds to a batch of batch_size CSV rows. The features dictionary maps feature column names to Tensors containing the corresponding column data, and labels is a Tensor containing the column data for the label column specified by label_name.
         """
+        self.typedic = {
+            'stringv': tf.string,
+            'string': tf.string,
+            'int32': tf.int32,
+            'int64': tf.int64,
+            'float32': tf.float32,
+            'float64': tf.float64,
+            'int32List': tf.int32,
+            'int64List': tf.int64,
+            'float32List': tf.float32,
+            'float64List': tf.float64,
+        }
         self.file_pattern=file_pattern
         self.col_type = col_type
         self.batch_size=batch_size
         self.column_names=column_names
-        self.column_defaults= [self.typedic[fe] for fe in col_type] if column_defaults is None else column_defaults
+        self.column_defaults= [self.typedic[col_type[fe]] for fe in col_type] if column_defaults is None else column_defaults
         self.label_name=label_name
         self.select_columns=select_columns if select_columns else list(col_type)
         self.field_delim=field_delim
         self.varlen_field_delim=varlen_field_delim
+        self.varlen_ragged = varlen_ragged
+        self.varlen_filld_value = varlen_filld_value
+        self.varlen_max_len = varlen_max_len
         self.use_quote_delim=use_quote_delim
         self.na_value=na_value
         self.header=header
@@ -221,7 +227,7 @@ class CSVLoader(FileTypeLoader):
                                                         'float32List', 'float64List']]
         self.use_hash=use_hash
         super(CSVLoader, self).__init__(**kwargs)
-    
+
     def load(self):
         datasetV = tf.data.experimental.make_csv_dataset(
                                         file_pattern= self.file_pattern,
@@ -245,14 +251,31 @@ class CSVLoader(FileTypeLoader):
                                         compression_type = self.compression_type,
                                         ignore_errors = self.ignore_errors,
                                         )
-        if len(self.varlens):
-            def varlen_parse_fun(x, y):
+
+        def varlen_parse_fun(*example):
+            if self.label_name:
+                x, y = example
+            else:
+                x = example[0]
+
+            if len(self.varlens):
                 for v in self.varlens:
-                    x[v] = tf.strings.split(x[v], self.varlen_field_delim)
+                    if not self.varlen_ragged:
+                        ragged = tf.strings.split(x[v], self.varlen_field_delim)
+                        x[v] = ragged.to_tensor(default_value=self.varlen_filld_value,
+                                            name='pad_ragged', 
+                                            shape=(None, self.varlen_max_len))
+                    else:
+                        x[v] = tf.strings.split(x[v], self.varlen_field_delim)
+
+            if self.label_name:
                 return x, y
+            else:
+                return x
+
         #TODO: hash function and feature_colmuns
-            datasetV = datasetV.map(varlen_parse_fun, 
-                                        num_parallel_calls= \
-                                            self.num_parallel_reads if self.num_parallel_reads else 1)
+        datasetV = datasetV.map(varlen_parse_fun, 
+                                    num_parallel_calls= \
+                                        self.num_parallel_reads if self.num_parallel_reads else 1)
 
         return datasetV
