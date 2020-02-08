@@ -52,6 +52,12 @@ chol = feature_column.embedding_column(
       "chol", 300), 3)
 
 demo(chol)
+# %%
+thal = feature_column.indicator_column(
+    feature_column.categorical_column_with_hash_bucket(
+      "thal", 5))
+
+demo(thal)
 #%%
 inputs = {h:layers.Input(name = h,shape=(1,), dtype = tf.int32) for h in example_batch}
 features = layers.DenseFeatures(chol)(inputs)
