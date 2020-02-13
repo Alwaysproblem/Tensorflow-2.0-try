@@ -36,7 +36,7 @@ y = y[:, None]
 #%%
 def lr(input_dim = 2, output_dim = 1, hidden = 32):
     inputs = Input(name="data", shape=(input_dim))
-    lr_l = layers.Dense(hidden, activation="relu")(inputs)
+    lr_l = layers.Dense(hidden, activation="relu", name = "linear", )(inputs)
     outputs = layers.Dense(output_dim, 
             activation='sigmoid', use_bias=True)(lr_l)
     
@@ -57,5 +57,21 @@ model_clone.summary()
 # %%
 model_clone.set_weights(model.get_weights())
 model_clone.predict(X[0:1])
+
+# %% clone one layer
+def oneLayer(clone_layer, input_dim = 2, output_dim = 1, hidden = 32):
+    inputs = Input(name="data", shape=(input_dim,))
+    lr_layer = layers.Dense(hidden).from_config(clone_layer.get_config())
+    lr_l = lr_layer(inputs)
+    model = tf2.keras.Model(inputs=inputs, outputs=lr_l)
+    return model
+
+#%%
+model_onelayer = oneLayer(model.get_layer("linear"))
+#%% clone one layer with weights.
+w = model.get_layer("linear").get_weights()
+model_onelayer.get_layer("linear").set_weights(w)
+# %%
+model_onelayer.predict(X[0:1])
 
 # %%
