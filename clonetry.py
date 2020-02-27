@@ -35,7 +35,7 @@ y = y[:, None]
 
 #%%
 def lr(input_dim = 2, output_dim = 1, hidden = 32):
-    inputs = Input(name="data", shape=(input_dim))
+    inputs = Input(name="data", shape=(input_dim,))
     lr_l = layers.Dense(hidden, activation="relu", name = "linear", )(inputs)
     outputs = layers.Dense(output_dim, 
             activation='sigmoid', use_bias=True)(lr_l)
