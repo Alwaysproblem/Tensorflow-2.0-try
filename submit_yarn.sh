@@ -18,7 +18,7 @@ export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path 
 # on the cluster the path for lihdfs.so and libjvm.so
 # /usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so
 # /usr/lib/ams-hbase/lib/hadoop-native/libhdfs.so
-export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs/*
+export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs/
 
 # jar Package on the air
 TFCONNECTOR=hdfs:///user-profile/yongxi/spark/jars/spark-tensorflow-connector_2.11-1.15.0.jar
@@ -34,7 +34,7 @@ EXECUTOR_MEMORY=2G
 # Train configuration
 EPOCHS=2
 
-# Input and output
+# Input and output and not "hdfs://" pre-ffix
 INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
 MODEL_DIR=/user-profile/yongxi/spark/tfoutput/mnist_model
 EXPORT_DIR=/user-profile/yongxi/spark/tfoutput/mnist_export
@@ -66,9 +66,10 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.network.timeout=60000s \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
-                    ./try_spark.py \
+                    ./examples/mnist/keras/mnist_spark.py \
                         --cluster_size ${SPARK_WORKER_INSTANCES} \
                         --epochs ${EPOCHS} \
                         --images_labels ${INPUT_DATA} \
                         --model_dir ${MODEL_DIR} \
                         --export_dir ${EXPORT_DIR}
+                    # ./try_spark.py \
