@@ -1,3 +1,4 @@
+set -ex
 # set environment variables (if not already done)
 # export PYTHON_ROOT=./Python
 export LD_LIBRARY_PATH=${PATH}
