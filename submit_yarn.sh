@@ -11,7 +11,7 @@ export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
 # set paths to libjvm.so, libhdfs.so, and libcuda*.so
 #export LIB_HDFS=/opt/cloudera/parcels/CDH/lib64                         # for CDH (per @wangyum)
-export LIB_HDFS=/usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so                   # path to libhdfs.so, for TF acccess to HDFS
+export LIB_HDFS=/usr/lib/ams-hbase/lib/hadoop-native/                   # path to libhdfs.so, for TF acccess to HDFS
 export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path to libjvm.so
 # export LIB_CUDA=/usr/local/cuda-7.5/lib64                              # for GPUs only
 
