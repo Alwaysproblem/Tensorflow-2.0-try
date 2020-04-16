@@ -20,9 +20,10 @@ ${SPARK_HOME}/bin/spark-submit \
                     --master ${MASTER} \
                     --conf spark.cores.max=${TOTAL_CORES} \
                     --conf spark.task.cpus=${CORES_PER_WORKER} \
+                    --num-executors ${SPARK_WORKER_INSTANCES} \
                     ${TFoS_HOME}/try_spark.py \
-                                    --epochs 2 \
                                     --cluster_size ${SPARK_WORKER_INSTANCES} \
+                                    --epochs 2 \
                                     --images_labels ${TFoS_HOME}/data/mnist/csv/train \
                                     --model_dir ${TFoS_HOME}/mnist_model \
                                     --export_dir ${TFoS_HOME}/mnist_export

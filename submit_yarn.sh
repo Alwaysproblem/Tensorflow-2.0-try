@@ -5,7 +5,7 @@ export LD_LIBRARY_PATH=${PATH}
 # export PYSPARK_PYTHON=${PYTHON_ROOT}/bin/python
 # export SPARK_YARN_USER_ENV="PYSPARK_PYTHON=Python/bin/python"
 # export PATH=${PYTHON_ROOT}/bin/:$PATH
-PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
+export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
@@ -20,44 +20,24 @@ export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                        # path to 
 # /usr/lib/ams-hbase/lib/hadoop-native/libhdfs.so
 export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs/*
 
+# jar Package on the air
 TFCONNECTOR=hdfs:///user-profile/yongxi/spark/jars/spark-tensorflow-connector_2.11-1.15.0.jar
 TFHADOOP=hdfs:///user-profile/yongxi/spark/jars/tensorflow-hadoop-1.15.0.jar
+
+# conda env
 CONDAENV=tf2dis
 
+# spark configuration
+SPARK_WORKER_INSTANCES=5
+EXECUTOR_MEMORY=2G
+
+# Train configuration
+EPOCHS=2
+
+# Input and output
 INPUT_DATA=hdfs:///user-profile/yongxi/spark/input/mnist/csv/train
 MODEL_DIR=hdfs:///user-profile/yongxi/spark/tfoutput/mnist_model
-# for CPU mode:
-# export QUEUE=default
-# remove references to $LIB_CUDA
-
-# # save images and labels as CSV files
-# ${SPARK_HOME}/bin/spark-submit \
-# --master yarn \
-# --deploy-mode cluster \
-# --queue ${QUEUE} \
-# --num-executors 4 \
-# --executor-memory 4G \
-# --archives hdfs:///user/${USER}/Python.zip#Python,mnist/mnist.zip#mnist \
-# --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_CUDA \
-# --driver-library-path=$LIB_CUDA \
-# TensorFlowOnSpark/examples/mnist/mnist_data_setup.py \
-# --output mnist/csv \
-# --format csv
-
-# # save images and labels as TFRecords (OPTIONAL)
-# ${SPARK_HOME}/bin/spark-submit \
-# --master yarn \
-# --deploy-mode cluster \
-# --queue ${QUEUE} \
-# --num-executors 4 \
-# --executor-memory 4G \
-# --archives hdfs:///user/${USER}/Python.zip#Python,mnist/mnist.zip#mnist \
-# --jars hdfs:///user/${USER}/tensorflow-hadoop-1.0-SNAPSHOT.jar \
-# --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_CUDA \
-# --driver-library-path=$LIB_CUDA \
-# TensorFlowOnSpark/examples/mnist/mnist_data_setup.py \
-# --output mnist/tfr \
-# --format tfr
+EXPORT_DIR=hdfs:///user-profile/yongxi/spark/tfoutput/mnist_export
 
 # For TensorFlow 2.x (git checkout master)
 # if MODLE_DIR exist then remove else skip
@@ -67,12 +47,18 @@ else
     echo "there is no directory named ${MODEL_DIR}"; 
 fi
 
+if $(hadoop fs -test -d ${EXPORT_DIR}); 
+    then sudo -u hdfs hadoop fs -rm -r -skipTrash ${EXPORT_DIR}; echo "already remove the directory."
+else 
+    echo "there is no directory named ${EXPORT_DIR}"; 
+fi
+
 sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --master yarn \
                     --deploy-mode cluster \
                     --queue ${QUEUE} \
-                    --num-executors 5 \
-                    --executor-memory 2G \
+                    --num-executors ${SPARK_WORKER_INSTANCES}  \
+                    --executor-memory ${EXECUTOR_MEMORY} \
                     --conf spark.dynamicAllocation.enabled=false \
                     --conf spark.yarn.maxAppAttempts=1 \
                     --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
@@ -81,5 +67,8 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
                     ./try_spark.py \
-                    --images_labels ${INPUT_DATA} \
-                    --model_dir ${MODEL_DIR}
+                        --cluster_size ${SPARK_WORKER_INSTANCES} \
+                        --epochs ${EPOCHS} \
+                        --images_labels ${INPUT_DATA} \
+                        --model_dir ${MODEL_DIR} \
+                        --export_dir ${EXPORT_DIR}
