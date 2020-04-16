@@ -76,8 +76,9 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.dynamicAllocation.enabled=false \
                     --conf spark.yarn.maxAppAttempts=1 \
                     --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
-                    --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
+                    --conf spark.network.timeout=60000s \
+                    --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
                     ./try_spark.py \
                     --images_labels ${INPUT_DATA} \
