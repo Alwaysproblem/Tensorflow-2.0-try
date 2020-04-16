@@ -77,6 +77,6 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
-                    ./examples/mnist/keras/mnist_spark.py \
+                    ./try_spark.py \
                     --images_labels ${INPUT_DATA} \
                     --model_dir ${MODEL_DIR}
