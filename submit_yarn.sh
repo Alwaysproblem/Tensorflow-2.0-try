@@ -5,6 +5,7 @@ export LD_LIBRARY_PATH=${PATH}
 # export PYSPARK_PYTHON=${PYTHON_ROOT}/bin/python
 # export SPARK_YARN_USER_ENV="PYSPARK_PYTHON=Python/bin/python"
 # export PATH=${PYTHON_ROOT}/bin/:$PATH
+PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
@@ -74,6 +75,7 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --executor-memory 2G \
                     --conf spark.dynamicAllocation.enabled=false \
                     --conf spark.yarn.maxAppAttempts=1 \
+                    --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
