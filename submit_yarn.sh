@@ -59,8 +59,8 @@ MODEL_DIR=hdfs:///user-profile/yongxi/spark/tfoutput/mnist_model
 # --format tfr
 
 # For TensorFlow 2.x (git checkout master)
-hadoop fs -rm -r ${MODEL_DIR}
-${SPARK_HOME}/bin/spark-submit \
+sudo -u hdfs hadoop fs -rm -r -skipTrash ${MODEL_DIR}
+sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --master yarn \
                     --deploy-mode cluster \
                     --queue ${QUEUE} \
