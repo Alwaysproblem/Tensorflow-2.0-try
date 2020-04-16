@@ -70,8 +70,7 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.yarn.maxAppAttempts=1 \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
-                    --jars ${TFCONNECTOR}
-                    --jars ${TFHADOOP}
+                    --jars ${TFCONNECTOR},${TFHADOOP} \
                     ./examples/mnist/keras/mnist_spark.py \
                     --images_labels ${INPUT_DATA} \
                     --model_dir ${MODEL_DIR}
