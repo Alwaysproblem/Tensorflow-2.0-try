@@ -36,8 +36,8 @@ EPOCHS=2
 
 # Input and output and not "hdfs://" pre-ffix
 INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
-MODEL_DIR=/user-profile/yongxi/spark/tfoutput/mnist_model
-EXPORT_DIR=/user-profile/yongxi/spark/tfoutput/mnist_export
+MODEL_DIR=hdfs://opera/user-profile/yongxi/spark/tfoutput/mnist_model
+EXPORT_DIR=hdfs://opera/user-profile/yongxi/spark/tfoutput/mnist_export
 
 # For TensorFlow 2.x (git checkout master)
 # if MODLE_DIR exist then remove else skip
