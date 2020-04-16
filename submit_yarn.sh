@@ -35,7 +35,7 @@ EXECUTOR_MEMORY=2G
 EPOCHS=2
 
 # Input and output and not "hdfs://" pre-ffix
-INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
+INPUT_DATA=hdfs://opera/user-profile/yongxi/spark/input/mnist/csv/train
 MODEL_DIR=hdfs://opera/user-profile/yongxi/spark/tfoutput/mnist_model
 EXPORT_DIR=hdfs://opera/user-profile/yongxi/spark/tfoutput/mnist_export
 
