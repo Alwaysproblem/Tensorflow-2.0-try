@@ -35,9 +35,9 @@ EXECUTOR_MEMORY=2G
 EPOCHS=2
 
 # Input and output
-INPUT_DATA=hdfs:///user-profile/yongxi/spark/input/mnist/csv/train
-MODEL_DIR=hdfs:///user-profile/yongxi/spark/tfoutput/mnist_model
-EXPORT_DIR=hdfs:///user-profile/yongxi/spark/tfoutput/mnist_export
+INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
+MODEL_DIR=/user-profile/yongxi/spark/tfoutput/mnist_model
+EXPORT_DIR=/user-profile/yongxi/spark/tfoutput/mnist_export
 
 # For TensorFlow 2.x (git checkout master)
 # if MODLE_DIR exist then remove else skip
@@ -58,14 +58,12 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --deploy-mode cluster \
                     --queue ${QUEUE} \
                     --num-executors ${SPARK_WORKER_INSTANCES} \
-                    --executor-cores 1 \
                     --executor-memory ${EXECUTOR_MEMORY} \
                     --conf spark.dynamicAllocation.enabled=false \
                     --conf spark.yarn.maxAppAttempts=1 \
                     --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
                     --conf spark.network.timeout=60000s \
-                    --conf spark.executorEnv.CLASSPATH=$(hadoop classpath --glob) \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
                     ./try_spark.py \
