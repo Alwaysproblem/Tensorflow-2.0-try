@@ -10,10 +10,10 @@ export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
 # set paths to libjvm.so, libhdfs.so, and libcuda*.so
-#export LIB_HDFS=/opt/cloudera/parcels/CDH/lib64                      # for CDH (per @wangyum)
-export LIB_HDFS=/usr/lib/ams-hbase/lib/hadoop-native                  # path to libhdfs.so, for TF acccess to HDFS
-export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                        # path to libjvm.so
-# export LIB_CUDA=/usr/local/cuda-7.5/lib64                             # for GPUs only
+#export LIB_HDFS=/opt/cloudera/parcels/CDH/lib64                         # for CDH (per @wangyum)
+export LIB_HDFS=/usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so                   # path to libhdfs.so, for TF acccess to HDFS
+export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path to libjvm.so
+# export LIB_CUDA=/usr/local/cuda-7.5/lib64                              # for GPUs only
 
 # on the cluster the path for lihdfs.so and libjvm.so
 # /usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so
@@ -64,6 +64,7 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
                     --conf spark.network.timeout=60000s \
+                    --conf spark.executorEnv.CLASSPATH=$(hadoop classpath --glob) \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
                     ./try_spark.py \
