@@ -59,7 +59,13 @@ MODEL_DIR=hdfs:///user-profile/yongxi/spark/tfoutput/mnist_model
 # --format tfr
 
 # For TensorFlow 2.x (git checkout master)
-sudo -u hdfs hadoop fs -rm -r -skipTrash ${MODEL_DIR}
+# if MODLE_DIR exist then remove else skip
+if $(hadoop fs -test -d ${MODEL_DIR}); 
+    then sudo -u hdfs hadoop fs -rm -r -skipTrash ${MODEL_DIR}; echo "already remove the directory."
+else 
+    echo "there is no directory named ${MODEL_DIR}"; 
+fi
+
 sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --master yarn \
                     --deploy-mode cluster \
