@@ -57,7 +57,8 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --master yarn \
                     --deploy-mode cluster \
                     --queue ${QUEUE} \
-                    --num-executors ${SPARK_WORKER_INSTANCES}  \
+                    --num-executors ${SPARK_WORKER_INSTANCES} \
+                    --executor-cores 1 \
                     --executor-memory ${EXECUTOR_MEMORY} \
                     --conf spark.dynamicAllocation.enabled=false \
                     --conf spark.yarn.maxAppAttempts=1 \
