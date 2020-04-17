@@ -48,7 +48,7 @@ def main_fun(args, ctx):
 
   # this fails
   # callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=args.model_dir)]
-  # tf.io.gfile.makedirs(args.model_dir)
+  tf.io.gfile.makedirs(args.model_dir)
   filepath = args.model_dir + "/weights-{epoch:04d}"
   callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=filepath, verbose=1, save_weights_only=True)]
 
