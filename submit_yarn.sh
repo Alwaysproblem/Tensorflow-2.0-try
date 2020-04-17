@@ -62,6 +62,9 @@ else
     echo "there is no directory named ${EXPORT_DIR}"; 
 fi
 
+sudo -u profile hadoop fs -mkdir -p ${MODEL_DIR}
+sudo -u profile hadoop fs -mkdir -p ${EXPORT_DIR}
+
 # sudo -u profile hadoop fs -rm -r -f -skipTrash ${MODEL_DIR}/*
 # sudo -u profile hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*
 

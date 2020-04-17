@@ -21,12 +21,13 @@ ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.cores.max=${TOTAL_CORES} \
                     --conf spark.task.cpus=${CORES_PER_WORKER} \
                     --num-executors ${SPARK_WORKER_INSTANCES} \
-                    ${TFoS_HOME}/try_spark.py \
+                    ${TFoS_HOME}/mnist_spark.py \
                                     --cluster_size ${SPARK_WORKER_INSTANCES} \
                                     --epochs 2 \
                                     --images_labels ${TFoS_HOME}/data/mnist/csv/train \
                                     --model_dir ${TFoS_HOME}/mnist_model \
                                     --export_dir ${TFoS_HOME}/mnist_export
                     # ${TFoS_HOME}/examples/mnist/keras/mnist_spark.py \
+                    # ${TFoS_HOME}/try_spark.py \
                     # --executor-cores 1 \
 
