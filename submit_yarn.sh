@@ -18,7 +18,7 @@ export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path 
 # on the cluster the path for lihdfs.so and libjvm.so
 # /usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so
 # /usr/lib/ams-hbase/lib/hadoop-native/libhdfs.so
-export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs/*
+export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
 
 # jar Package on the air
 TFCONNECTOR=hdfs:///user-profile/yongxi/spark/jars/spark-tensorflow-connector_2.11-1.15.0.jar
