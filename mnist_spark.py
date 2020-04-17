@@ -8,7 +8,7 @@ def main_fun(args, ctx):
   import tensorflow as tf
   from tensorflowonspark import compat, TFNode
 
-  strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
+  strategy = tf.distribute.MirroredStrategy()
 
   def build_and_compile_cnn_model():
     model = tf.keras.Sequential([
@@ -59,11 +59,11 @@ def main_fun(args, ctx):
   # so we need to ensure that all workers complete training before any of them run out of data from the RDD.
   # And given that Spark RDD partitions (and partition sizes) can be non-evenly divisible by num_workers,
   # we'll just stop training at 90% of the total expected number of steps.
-  steps_per_epoch = 60000 / args.batch_size
-  steps_per_epoch_per_worker = steps_per_epoch / ctx.num_workers
-  max_steps_per_worker = steps_per_epoch_per_worker * 0.9
+  steps_per_epoch = 60000 // args.batch_size
+  steps_per_epoch_per_worker = steps_per_epoch // ctx.num_workers
+  max_steps_per_worker = int(steps_per_epoch_per_worker * 0.9)
 
-  multi_worker_model.fit(x=ds, epochs=args.epochs, steps_per_epoch=max_steps_per_worker, callbacks=callbacks)
+  multi_worker_model.fit(x=ds, epochs=args.epochs, steps_per_epoch=max(1, max_steps_per_worker), callbacks=callbacks)
 
   from tensorflow_estimator.python.estimator.export import export_lib
   export_dir = export_lib.get_timestamped_export_dir(args.export_dir)
