@@ -48,17 +48,21 @@ EXPORT_DIR=/user-profile/yongxi/spark/tfoutput/mnist_export
 
 # For TensorFlow 2.x (git checkout master)
 # if MODLE_DIR exist then remove else skip
-if $(hadoop fs -test -d ${MODEL_DIR}); 
-    then sudo -u hdfs hadoop fs -rm -r -skipTrash ${MODEL_DIR}; echo "already remove the directory."
-else 
-    echo "there is no directory named ${MODEL_DIR}"; 
-fi
+# if $(hadoop fs -test -d ${MODEL_DIR}); 
+#     then sudo -u hdfs hadoop fs -rm -r -skipTrash ${MODEL_DIR}; echo "already remove the directory."
+# else 
+#     echo "there is no directory named ${MODEL_DIR}"; 
+# fi
 
-if $(hadoop fs -test -d ${EXPORT_DIR}); 
-    then sudo -u hdfs hadoop fs -rm -r -skipTrash ${EXPORT_DIR}; echo "already remove the directory."
-else 
-    echo "there is no directory named ${EXPORT_DIR}"; 
-fi
+# if $(hadoop fs -test -d ${EXPORT_DIR}); 
+#     then sudo -u hdfs hadoop fs -rm -r -skipTrash ${EXPORT_DIR}; echo "already remove the directory."
+# else 
+#     echo "there is no directory named ${EXPORT_DIR}"; 
+# fi
+
+sudo -u profile hadoop fs -rm -r -f -skipTrash ${MODEL_DIR}/*
+sudo -u profile hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*
+
 
 sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --master yarn \
