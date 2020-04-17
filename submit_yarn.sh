@@ -73,10 +73,10 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.network.timeout=60000s \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
-                    ./try_spark.py \
+                    ./examples/mnist/keras/mnist_spark.py \
                         --cluster_size ${SPARK_WORKER_INSTANCES} \
                         --epochs ${EPOCHS} \
                         --images_labels ${INPUT_DATA} \
                         --model_dir ${MODEL_DIR} \
                         --export_dir ${EXPORT_DIR}
-                    # ./examples/mnist/keras/mnist_spark.py \
+                    # ./try_spark.py \
