@@ -52,7 +52,7 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.dynamicAllocation.enabled=false \
                     --conf spark.yarn.maxAppAttempts=1 \
                     --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
-                    --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
+                    --conf spark.executorEnv.LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$LIB_JVM:$LIB_HDFS \
                     --conf spark.network.timeout=60000s \
                     --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
                     --conf spark.executorEnv.HADOOP_USER_NAME=${HADOOP_USER_NAME} \
