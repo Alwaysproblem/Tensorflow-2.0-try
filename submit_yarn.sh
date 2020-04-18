@@ -2,23 +2,19 @@ set -ex
 # set environment variables (if not already done)
 # export PYTHON_ROOT=./Python
 export LD_LIBRARY_PATH=${PATH}
-# export PYSPARK_PYTHON=${PYTHON_ROOT}/bin/python
-# export SPARK_YARN_USER_ENV="PYSPARK_PYTHON=Python/bin/python"
-# export PATH=${PYTHON_ROOT}/bin/:$PATH
 export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
 # set paths to libjvm.so, libhdfs.so, and libcuda*.so
-#export LIB_HDFS=/opt/cloudera/parcels/CDH/lib64                         # for CDH (per @wangyum)
 export LIB_HDFS=/usr/lib/ams-hbase/lib/hadoop-native                     # path to libhdfs.so, for TF acccess to HDFS
 export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path to libjvm.so
-# export LIB_CUDA=/usr/local/cuda-7.5/lib64                              # for GPUs only
 
 # on the cluster the path for lihdfs.so and libjvm.so
 # /usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so
 # /usr/lib/ams-hbase/lib/hadoop-native/libhdfs.so
 export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
+export HADOOP_USER_NAME=profile
 
 # jar Package on the air
 TFCONNECTOR=hdfs:///user-profile/yongxi/spark/jars/spark-tensorflow-connector_2.11-1.15.0.jar
@@ -37,39 +33,14 @@ EPOCHS=2
 # Input and output and not "hdfs://" pre-ffix
 # and must obtain the write permission all the way of the path.
 # because tensorflow will be create recursively files and paths.
-INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
-MODEL_DIR=/tmp/yongxi/tfoutput/mnist_model
-EXPORT_DIR=/tmp/yongxi/tfoutput/mnist_export
+export INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
+export MODEL_DIR=/tmp/yongxi/tfoutput/mnist_model
+export EXPORT_DIR=/tmp/yongxi/tfoutput/mnist_export
 
-# MODEL_DIR=/user-profile/yongxi/spark/tfoutput/mnist_model
-# EXPORT_DIR=/user-profile/yongxi/spark/tfoutput/mnist_export
+sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${MODEL_DIR}/*
+sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*
 
-# INPUT_DATA=hdfs://opera/user-profile/yongxi/spark/input/mnist/csv/train
-# MODEL_DIR=hdfs://opera/user-profile/yongxi/spark/tfoutput/mnist_model
-# EXPORT_DIR=hdfs://opera/user-profile/yongxi/spark/tfoutput/mnist_export
-
-# For TensorFlow 2.x (git checkout master)
-# if MODLE_DIR exist then remove else skip
-# if $(hadoop fs -test -d ${MODEL_DIR}); 
-#     then sudo -u hdfs hadoop fs -rm -r -skipTrash ${MODEL_DIR}; echo "already remove the directory."
-# else 
-#     echo "there is no directory named ${MODEL_DIR}"; 
-# fi
-
-# if $(hadoop fs -test -d ${EXPORT_DIR}); 
-#     then sudo -u hdfs hadoop fs -rm -r -skipTrash ${EXPORT_DIR}; echo "already remove the directory."
-# else 
-#     echo "there is no directory named ${EXPORT_DIR}"; 
-# fi
-
-# sudo -u profile hadoop fs -mkdir -p ${MODEL_DIR}
-# sudo -u profile hadoop fs -mkdir -p ${EXPORT_DIR}
-
-sudo -u profile hadoop fs -rm -r -f -skipTrash ${MODEL_DIR}/*
-sudo -u profile hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*
-
-
-sudo -u profile ${SPARK_HOME}/bin/spark-submit \
+sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                     --master yarn \
                     --deploy-mode cluster \
                     --queue ${QUEUE} \
@@ -80,6 +51,7 @@ sudo -u profile ${SPARK_HOME}/bin/spark-submit \
                     --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
                     --conf spark.network.timeout=60000s \
+                    --conf spark.executorEnv.HADOOP_USER_NAME=${HADOOP_USER_NAME} \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
                     mnist_spark.py \
