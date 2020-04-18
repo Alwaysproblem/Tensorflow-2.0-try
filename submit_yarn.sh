@@ -5,13 +5,14 @@ set -ex
 CONDAENV=tf2dis
 export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
 export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
-export LD_LIBRARY_PATH=${PATH}:${HADOOP_HDFS_HOME}:${JAVA_HOME}/jre/lib/amd64/server
+export LD_LIBRARY_PATH=${PATH}
 export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
 # set paths to libjvm.so, libhdfs.so, and libcuda*.so
 export LIB_HDFS=/home/sdev/yongxi/target/usr/local/lib                   # path to libhdfs.so, for TF acccess to HDFS
+# already upto hdfs:///user-profile/yongxi/spark/jars/lib
 export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path to libjvm.so
 
 # on the cluster the path for lihdfs.so and libjvm.so
@@ -19,7 +20,6 @@ export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path 
 # /usr/lib/ams-hbase/lib/hadoop-native/libhdfs.so
 
 export HADOOP_USER_NAME=profile
-
 export CLASSPATH=$(hadoop classpath --glob)
 
 # jar Package on the air
@@ -37,9 +37,9 @@ EPOCHS=2
 # Input and output and not "hdfs://" pre-ffix
 # and must obtain the write permission all the way of the path.
 # because tensorflow will be create recursively files and paths.
-export INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
-export MODEL_DIR=/tmp/yongxi/tfoutput/mnist_model
-export EXPORT_DIR=/tmp/yongxi/tfoutput/mnist_export
+INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
+MODEL_DIR=/tmp/yongxi/tfoutput/mnist_model
+EXPORT_DIR=/tmp/yongxi/tfoutput/mnist_export
 
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${MODEL_DIR}/*
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*
@@ -53,7 +53,7 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.dynamicAllocation.enabled=false \
                     --conf spark.yarn.maxAppAttempts=1 \
                     --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
-                    --conf spark.executorEnv.LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$LIB_JVM:$LIB_HDFS \
+                    --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
                     --conf spark.network.timeout=60000s \
                     --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
                     --conf spark.executorEnv.HADOOP_USER_NAME=${HADOOP_USER_NAME} \
