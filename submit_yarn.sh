@@ -3,6 +3,10 @@ set -ex
 # set environment variables (if not already done)
 # conda env
 CONDAENV=tf2dis
+
+# /usr/hdp/2.5.6.0-40/hadoop/lib/native
+# /usr/hdp/2.5.6.0-40/hadoop/libexec
+
 # export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
 # export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
 # export LD_LIBRARY_PATH=${PATH}
@@ -11,7 +15,7 @@ export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
 # set paths to libjvm.so, libhdfs.so, and libcuda*.so
-export LIB_HDFS=/user-profile/yongxi/spark/jars/lib                   # path to libhdfs.so, for TF acccess to HDFS
+export LIB_HDFS=$HADOOP_PREFIX/lib/native/Linux-amd64-64                   # path to libhdfs.so, for TF acccess to HDFS
 # already upto hdfs:///user-profile/yongxi/spark/jars/lib
 export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path to libjvm.so
 
