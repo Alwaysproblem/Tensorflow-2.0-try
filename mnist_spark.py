@@ -70,6 +70,7 @@ def main_fun(args, ctx):
   # export_dir = export_lib.get_timestamped_export_dir(args.export_dir)
   # compat.export_saved_model(multi_worker_model, export_dir, ctx.job_name == 'chief')
   if ctx.job_name == 'chief':
+    print(args.export_dir)
     multi_worker_model.save(args.export_dir)
 
   # terminating feed tells spark to skip processing further partitions
