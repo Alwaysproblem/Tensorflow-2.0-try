@@ -19,7 +19,7 @@ export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path 
 
 export HADOOP_USER_NAME=profile
 
-export CLASSPATH=$(${HADOOP_HOME}/bin/hadoop classpath --glob)
+export CLASSPATH=$(hadoop classpath --glob)
 export KRB5CCNAME=/tmp/krb5cc_10002
 
 # jar Package on the air
