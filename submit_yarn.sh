@@ -3,9 +3,9 @@ set -ex
 # set environment variables (if not already done)
 # conda env
 CONDAENV=tf2dis
-export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
-export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
-export LD_LIBRARY_PATH=${PATH}
+# export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
+# export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
+# export LD_LIBRARY_PATH=${PATH}
 export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
@@ -20,7 +20,7 @@ export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path 
 # /usr/lib/ams-hbase/lib/hadoop-native/libhdfs.so
 
 export HADOOP_USER_NAME=profile
-export CLASSPATH=$(hadoop classpath --glob)
+# export CLASSPATH=$(hadoop classpath --glob)
 
 # jar Package on the air
 TFCONNECTOR=hdfs:///user-profile/yongxi/spark/jars/spark-tensorflow-connector_2.11-1.15.0.jar
@@ -55,7 +55,6 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                     --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
                     --conf spark.network.timeout=60000s \
-                    --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
                     --conf spark.executorEnv.HADOOP_USER_NAME=${HADOOP_USER_NAME} \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
@@ -66,3 +65,4 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                         --model_dir ${MODEL_DIR} \
                         --export_dir ${EXPORT_DIR}
                     # try_spark.py \
+                    # --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
