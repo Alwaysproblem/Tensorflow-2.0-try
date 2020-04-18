@@ -50,9 +50,9 @@ def main_fun(args, ctx):
 
   # this fails
   # callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=args.model_dir)]
-#   tf.io.gfile.makedirs(args.model_dir)
-  filepath = args.model_dir + "/weights-{epoch:04d}"
-  callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=filepath, verbose=1, save_weights_only=True)]
+  # tf.io.gfile.makedirs(args.model_dir)
+  # filepath = args.model_dir + "/weights-{epoch:04d}"
+  # callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=filepath, verbose=1, save_weights_only=True)]
 
   with strategy.scope():
     multi_worker_model = build_and_compile_cnn_model()
@@ -65,11 +65,14 @@ def main_fun(args, ctx):
   steps_per_epoch_per_worker = steps_per_epoch // ctx.num_workers
   max_steps_per_worker = int(steps_per_epoch_per_worker * 0.9)
 
-  multi_worker_model.fit(x=ds, epochs=args.epochs, steps_per_epoch=max(1, max_steps_per_worker), callbacks=callbacks)
+  multi_worker_model.fit(x=ds, epochs=args.epochs, steps_per_epoch=max(1, max_steps_per_worker))
+  # multi_worker_model.fit(x=ds, epochs=args.epochs, steps_per_epoch=max(1, max_steps_per_worker), callbacks=callbacks)
 
-  from tensorflow_estimator.python.estimator.export import export_lib
-  export_dir = export_lib.get_timestamped_export_dir(args.export_dir)
-  compat.export_saved_model(multi_worker_model, export_dir, ctx.job_name == 'chief')
+  # from tensorflow_estimator.python.estimator.export import export_lib
+  # export_dir = export_lib.get_timestamped_export_dir(args.export_dir)
+  # compat.export_saved_model(multi_worker_model, export_dir, ctx.job_name == 'chief')
+  if ctx.job_name == 'chief':
+    multi_worker_model.save(args.export_dir)
 
   # terminating feed tells spark to skip processing further partitions
   tf_feed.terminate()
