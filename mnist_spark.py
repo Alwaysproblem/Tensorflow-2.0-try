@@ -8,7 +8,9 @@ def main_fun(args, ctx):
   import tensorflow as tf
   from tensorflowonspark import compat, TFNode
 
+  # strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
   strategy = tf.distribute.MirroredStrategy()
+
 
   def build_and_compile_cnn_model():
     model = tf.keras.Sequential([
