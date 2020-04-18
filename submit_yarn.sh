@@ -7,7 +7,7 @@ export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
 # set paths to libjvm.so, libhdfs.so, and libcuda*.so
-export LIB_HDFS=/usr/lib/ams-hbase/lib/hadoop-native                     # path to libhdfs.so, for TF acccess to HDFS
+export LIB_HDFS=/usr/hdp/2.5.6.0-40/usr/lib                     # path to libhdfs.so, for TF acccess to HDFS
 export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path to libjvm.so
 
 # on the cluster the path for lihdfs.so and libjvm.so
