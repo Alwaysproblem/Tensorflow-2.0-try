@@ -15,9 +15,13 @@ export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
 # set paths to libjvm.so, libhdfs.so, and libcuda*.so
-export LIB_HDFS=$HADOOP_PREFIX/lib/native/Linux-amd64-64                   # path to libhdfs.so, for TF acccess to HDFS
+export LIB_HDFS=/user-profile/yongxi/spark/env/tfhdfs                   # path to libhdfs.so, for TF acccess to HDFS
 # already upto hdfs:///user-profile/yongxi/spark/jars/lib
-export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path to libjvm.so
+export LIB_JVM=/user-profile/yongxi/spark/env/tfjvm                           # path to libjvm.so
+# # set paths to libjvm.so, libhdfs.so, and libcuda*.so
+# export LIB_HDFS=$HADOOP_PREFIX/lib/native/Linux-amd64-64                   # path to libhdfs.so, for TF acccess to HDFS
+# # already upto hdfs:///user-profile/yongxi/spark/jars/lib
+# export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server                           # path to libjvm.so
 
 # on the cluster the path for lihdfs.so and libjvm.so
 # /usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so
@@ -27,8 +31,8 @@ export HADOOP_USER_NAME=profile
 # export CLASSPATH=$(hadoop classpath --glob)
 
 # jar Package on the air
-TFCONNECTOR=hdfs:///user-profile/yongxi/spark/jars/spark-tensorflow-connector_2.11-1.15.0.jar
-TFHADOOP=hdfs:///user-profile/yongxi/spark/jars/tensorflow-hadoop-1.15.0.jar
+TFCONNECTOR=hdfs:///user-profile/yongxi/spark/env/jars/spark-tensorflow-connector_2.11-1.15.0.jar
+TFHADOOP=hdfs:///user-profile/yongxi/spark/env/jars/tensorflow-hadoop-1.15.0.jar
 
 
 # spark configuration
