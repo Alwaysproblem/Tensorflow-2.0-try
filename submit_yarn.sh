@@ -15,9 +15,9 @@ export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
 # set paths to libjvm.so, libhdfs.so, and libcuda*.so
-export LIB_HDFS=/user-profile/yongxi/spark/env/tfhdfs                   # path to libhdfs.so, for TF acccess to HDFS
+export LIB_HDFS=hdfs:///user-profile/yongxi/spark/env/tfhdfs                   # path to libhdfs.so, for TF acccess to HDFS
 # already upto hdfs:///user-profile/yongxi/spark/jars/lib
-export LIB_JVM=/user-profile/yongxi/spark/env/tfjvm                           # path to libjvm.so
+export LIB_JVM=hdfs:///user-profile/yongxi/spark/env/tfjvm                           # path to libjvm.so
 # # set paths to libjvm.so, libhdfs.so, and libcuda*.so
 # export LIB_HDFS=$HADOOP_PREFIX/lib/native/Linux-amd64-64                   # path to libhdfs.so, for TF acccess to HDFS
 # # already upto hdfs:///user-profile/yongxi/spark/jars/lib
