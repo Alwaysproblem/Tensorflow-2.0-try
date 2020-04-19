@@ -8,7 +8,10 @@ CONDAENV=tf2dis
 # /usr/hdp/2.5.6.0-40/hadoop/libexec
 
 # export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
-# export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
+export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
+source ${HADOOP_HOME}/libexec/hadoop-config.sh
+export CLASSPATH=$(hadoop classpath --glob)
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${JAVA_HOME}/jre/lib/amd64/server
 # export LD_LIBRARY_PATH=${PATH}
 export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
@@ -61,9 +64,10 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.dynamicAllocation.enabled=false \
                     --conf spark.yarn.maxAppAttempts=1 \
                     --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
-                    --conf spark.executorEnv.LD_LIBRARY_PATH=$LIB_JVM:$LIB_HDFS \
+                    --conf spark.executorEnv.LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$LIB_JVM:$LIB_HDFS \
                     --conf spark.network.timeout=60000s \
                     --conf spark.executorEnv.HADOOP_USER_NAME=${HADOOP_USER_NAME} \
+                    --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
                     mnist_spark.py \
@@ -73,4 +77,3 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                         --model_dir ${MODEL_DIR} \
                         --export_dir ${EXPORT_DIR}
                     # try_spark.py \
-                    # --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
