@@ -73,7 +73,8 @@ def main_fun(args, ctx):
   # compat.export_saved_model(multi_worker_model, export_dir, ctx.job_name == 'chief')
   if ctx.job_name == 'chief':
     print("the saved model path should be ", args.export_dir)
-    multi_worker_model.save(args.export_dir)
+    model_json_str = multi_worker_model.to_json()
+    print(model_json_str)
 
   # terminating feed tells spark to skip processing further partitions
   tf_feed.terminate()
