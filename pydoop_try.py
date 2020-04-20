@@ -43,4 +43,4 @@ model.summary()
 #%%
 model.compile('adam', loss=tf2.losses.BinaryCrossentropy())
 model.fit(X, y, epochs=1, batch_size = 10)
-model.save("/tmp/yongxi/tfoutput/mnist_export/")
+model.save("hdfs:///tmp/yongxi/tfoutput/mnist_export/")
