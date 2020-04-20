@@ -7,6 +7,8 @@ def main_fun(args, ctx):
   import numpy as np
   import tensorflow as tf
   from tensorflowonspark import compat, TFNode
+  import pydoop.hdfs as hdfs
+  import json
 
   # strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
   strategy = tf.distribute.MirroredStrategy()
@@ -75,6 +77,9 @@ def main_fun(args, ctx):
     print("the saved model path should be ", args.export_dir)
     model_json_str = multi_worker_model.to_json()
     print(model_json_str)
+    
+    with hdfs.open(args.export_dir + "/xx.txt", mode='wt', user='profile') as f:
+      print(model_json_str, file=f)
 
   # terminating feed tells spark to skip processing further partitions
   tf_feed.terminate()
