@@ -5,11 +5,10 @@ set -ex
 CONDAENV=tf2dis
 
 # /usr/hdp/2.5.6.0-40/hadoop/lib/native
-# /usr/hdp/2.5.6.0-40/hadoop/libexec
+# /usr/hdp/2.5.6.0-40/hadoop/libexec/hadoop-config.sh
 
 # export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
 export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
-source ${HADOOP_HOME}/libexec/hadoop-config.sh
 export CLASSPATH=$(hadoop classpath --glob)
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${JAVA_HOME}/jre/lib/amd64/server
 # export LD_LIBRARY_PATH=${PATH}
@@ -57,7 +56,7 @@ sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*
 
 sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                     --master yarn \
-                    --deploy-mode cluster \
+                    --deploy-mode client \
                     --queue ${QUEUE} \
                     --num-executors ${SPARK_WORKER_INSTANCES} \
                     --executor-memory ${EXECUTOR_MEMORY} \
@@ -68,6 +67,7 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.network.timeout=60000s \
                     --conf spark.executorEnv.HADOOP_USER_NAME=${HADOOP_USER_NAME} \
                     --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
+                    --conf spark.task.maxFailures=1 \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
                     mnist_spark.py \
