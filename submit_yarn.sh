@@ -11,6 +11,7 @@ CONDAENV=tf2dis
 export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
 export CLASSPATH=$(hadoop classpath --glob)
 # export LD_LIBRARY_PATH=${PATH}
+export LD_LIBRARY_PATH=${PATH}:${JAVA_HOME}/jre/lib/amd64/server:/home/sdev/yongxi/env/tfhdfs/lib
 export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
@@ -54,7 +55,7 @@ EXPORT_DIR=/tmp/yongxi/tfoutput/mnist_export
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${MODEL_DIR}/*
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*
 
-sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
+${SPARK_HOME}/bin/spark-submit \
                     --master yarn \
                     --deploy-mode cluster \
                     --queue ${QUEUE} \
@@ -62,7 +63,7 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                     --executor-memory ${EXECUTOR_MEMORY} \
                     --conf spark.dynamicAllocation.enabled=false \
                     --conf spark.yarn.maxAppAttempts=1 \
-                    --conf spark.executorEnv.LD_LIBRARY_PATH=${LIB_JVM}:${LIB_HDFS} \
+                    --conf spark.executorEnv.LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LIB_JVM}:${LIB_HDFS} \
                     --conf spark.executorEnv.HADOOP_USER_NAME=${HADOOP_USER_NAME} \
                     --conf spark.network.timeout=3600s \
                     --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
