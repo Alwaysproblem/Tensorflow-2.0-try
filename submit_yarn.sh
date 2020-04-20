@@ -9,7 +9,7 @@ CONDAENV=tf2dis
 
 # export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
 export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
-# export CLASSPATH=$(hadoop classpath --glob)
+export CLASSPATH=$(hadoop classpath --glob)
 # export LD_LIBRARY_PATH=${PATH}
 export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
@@ -48,8 +48,8 @@ EPOCHS=2
 # and must obtain the write permission all the way of the path.
 # because tensorflow will be create recursively files and paths.
 INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
-MODEL_DIR=hdfs://opera/tmp/yongxi/tfoutput/mnist_model
-EXPORT_DIR=hdfs://opera/tmp/yongxi/tfoutput/mnist_export
+MODEL_DIR=/tmp/yongxi/tfoutput/mnist_model
+EXPORT_DIR=/tmp/yongxi/tfoutput/mnist_export
 
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${MODEL_DIR}/*
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*
