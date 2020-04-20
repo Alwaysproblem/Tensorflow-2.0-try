@@ -9,7 +9,7 @@ CONDAENV=tf2dis
 
 # export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
 export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
-export CLASSPATH=$(hadoop classpath --glob)
+# export CLASSPATH=$(hadoop classpath --glob)
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${JAVA_HOME}/jre/lib/amd64/server
 # export LD_LIBRARY_PATH=${PATH}
 export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
@@ -66,7 +66,6 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$LIB_JVM:$LIB_HDFS \
                     --conf spark.network.timeout=60000s \
                     --conf spark.executorEnv.HADOOP_USER_NAME=${HADOOP_USER_NAME} \
-                    --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
                     --conf spark.task.maxFailures=1 \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
@@ -77,3 +76,4 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                         --model_dir ${MODEL_DIR} \
                         --export_dir ${EXPORT_DIR}
                     # try_spark.py \
+                    # --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
