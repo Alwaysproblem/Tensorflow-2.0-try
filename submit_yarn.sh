@@ -48,8 +48,8 @@ EPOCHS=2
 # and must obtain the write permission all the way of the path.
 # because tensorflow will be create recursively files and paths.
 INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
-MODEL_DIR=hdfs:///tmp/yongxi/tfoutput/mnist_model
-EXPORT_DIR=hdfs:///tmp/yongxi/tfoutput/mnist_export
+MODEL_DIR=hdfs://opera/tmp/yongxi/tfoutput/mnist_model
+EXPORT_DIR=hdfs://opera/tmp/yongxi/tfoutput/mnist_export
 
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${MODEL_DIR}/*
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*
@@ -62,7 +62,6 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                     --executor-memory ${EXECUTOR_MEMORY} \
                     --conf spark.dynamicAllocation.enabled=false \
                     --conf spark.yarn.maxAppAttempts=1 \
-                    --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$LIB_JVM:$LIB_HDFS \
                     --conf spark.network.timeout=60000s \
                     --conf spark.executorEnv.HADOOP_USER_NAME=${HADOOP_USER_NAME} \
@@ -77,3 +76,4 @@ sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
                         --export_dir ${EXPORT_DIR}
                     # try_spark.py \
                     # --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
+                    # --conf "spark.yarn.appMasterEnv.PYSPARK_PYTHON=./${CONDAENV}_zip/${CONDAENV}/bin/python" \
