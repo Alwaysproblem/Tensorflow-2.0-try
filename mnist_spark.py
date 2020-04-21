@@ -9,6 +9,7 @@ def main_fun(args, ctx):
   from tensorflowonspark import compat, TFNode
   import pydoop.hdfs as hdfs
   import json
+  import pydoop.hdfs.path as hpath
 
   # strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
   strategy = tf.distribute.MirroredStrategy()
@@ -58,7 +59,7 @@ def main_fun(args, ctx):
 
   with strategy.scope():
     multi_worker_model = build_and_compile_cnn_model()
-
+  model_config = multi_worker_model.to_json()
   # Note: MultiWorkerMirroredStrategy (CollectiveAllReduceStrategy) is synchronous,
   # so we need to ensure that all workers complete training before any of them run out of data from the RDD.
   # And given that Spark RDD partitions (and partition sizes) can be non-evenly divisible by num_workers,
@@ -74,12 +75,12 @@ def main_fun(args, ctx):
   # export_dir = export_lib.get_timestamped_export_dir(args.export_dir)
   # compat.export_saved_model(multi_worker_model, export_dir, ctx.job_name == 'chief')
   if ctx.job_name == 'chief':
-    print("the saved model path should be ", args.export_dir)
-    model_json_str = multi_worker_model.to_json()
-    print(model_json_str)
-    
-    with hdfs.open(args.export_dir + "/xx.txt", mode='wt', user='profile') as f:
-      print(model_json_str, file=f)
+    print("the saved model path:", args.export_dir)
+    multi_worker_model.save(args.export_dir + "/modelSaved.h5")
+    dest = hpath.abspath(args.export_dir + "/modelSaved.h5")
+    hdfs.put(args.export_dir + "/modelSaved.h5", dest)
+    # with hdfs.open(args.export_dir + "/xx.txt", mode='wt', user='profile') as f:
+    #   print(model_json_str, file=f)
 
   # terminating feed tells spark to skip processing further partitions
   tf_feed.terminate()
