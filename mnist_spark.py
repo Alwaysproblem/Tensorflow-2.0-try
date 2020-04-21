@@ -78,10 +78,10 @@ def main_fun(args, ctx):
   if ctx.job_name == 'chief':
     print("the saved model path:", args.export_dir)
     multi_worker_model.save(args.export_dir)
+    time.sleep(0.5) # give some time to put on hdfs
 
     dest = hpath.abspath(args.export_dir)
-    hdfs.put(args.export_dir + '/*', dest, user='profile')
-    time.sleep(0.5)
+    hdfs.put(args.export_dir, dest, user='profile')
     # with hdfs.open(args.export_dir + "/xx.txt", mode='wt', user='profile') as f:
     #   print(model_json_str, file=f)
 
