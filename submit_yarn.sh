@@ -43,7 +43,7 @@ SPARK_WORKER_INSTANCES=5
 EXECUTOR_MEMORY=2G
 
 # Train configuration
-EPOCHS=2
+EPOCHS=10
 
 # Input and output and not "hdfs://" pre-ffix
 # and must obtain the write permission all the way of the path.
