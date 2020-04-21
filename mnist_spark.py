@@ -10,6 +10,7 @@ def main_fun(args, ctx):
   import pydoop.hdfs as hdfs
   import json
   import pydoop.hdfs.path as hpath
+  import time 
 
   # strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
   strategy = tf.distribute.MirroredStrategy()
@@ -76,9 +77,11 @@ def main_fun(args, ctx):
   # compat.export_saved_model(multi_worker_model, export_dir, ctx.job_name == 'chief')
   if ctx.job_name == 'chief':
     print("the saved model path:", args.export_dir)
-    multi_worker_model.save(args.export_dir + "/modelSaved.h5")
-    dest = hpath.abspath(args.export_dir + "/modelSaved.h5")
-    hdfs.put(args.export_dir + "/modelSaved.h5", dest)
+    multi_worker_model.save(args.export_dir)
+
+    dest = hpath.abspath(args.export_dir)
+    hdfs.put(args.export_dir + '/*', dest, user='profile')
+    time.sleep(0.5)
     # with hdfs.open(args.export_dir + "/xx.txt", mode='wt', user='profile') as f:
     #   print(model_json_str, file=f)
 
