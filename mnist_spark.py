@@ -60,7 +60,7 @@ def main_fun(args, ctx):
 
   with strategy.scope():
     multi_worker_model = build_and_compile_cnn_model()
-  model_config = multi_worker_model.to_json()
+
   # Note: MultiWorkerMirroredStrategy (CollectiveAllReduceStrategy) is synchronous,
   # so we need to ensure that all workers complete training before any of them run out of data from the RDD.
   # And given that Spark RDD partitions (and partition sizes) can be non-evenly divisible by num_workers,
@@ -78,7 +78,7 @@ def main_fun(args, ctx):
   if ctx.job_name == 'chief':
     print("the saved model path:", args.export_dir)
     # multi_worker_model.save(args.export_dir)
-    multi_worker_model.save(args.export_dir)
+    multi_worker_model.save(args.export_dir + '/model.h5')
 
     dest = hpath.abspath(args.export_dir)
     hdfs.put(args.export_dir, dest)
