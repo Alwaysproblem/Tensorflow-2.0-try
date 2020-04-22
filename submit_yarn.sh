@@ -30,7 +30,7 @@ export LIB_JVM=./${CONDAENV}_zip/env/tfjvm
 # /usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so
 # /usr/lib/ams-hbase/lib/hadoop-native/libhdfs.so
 
-export HADOOP_USER_NAME=adalgo
+export HADOOP_USER_NAME=profile
 # export CLASSPATH=$(hadoop classpath --glob)
 
 # jar Package on the air

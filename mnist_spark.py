@@ -81,7 +81,7 @@ def main_fun(args, ctx):
     multi_worker_model.save(args.export_dir)
 
     dest = hpath.abspath(args.export_dir)
-    hdfs.put(args.export_dir, dest, user='adalgo')
+    hdfs.put(args.export_dir, dest, user=None)
     # with hdfs.open(args.export_dir + "/xx.txt", mode='wt', user='profile') as f:
     #   print(model_json_str, file=f)
 
