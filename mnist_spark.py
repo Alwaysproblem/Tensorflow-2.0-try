@@ -77,11 +77,11 @@ def main_fun(args, ctx):
   # compat.export_saved_model(multi_worker_model, export_dir, ctx.job_name == 'chief')
   if ctx.job_name == 'chief':
     print("the saved model path:", args.export_dir)
+    # multi_worker_model.save(args.export_dir)
     multi_worker_model.save(args.export_dir)
-    time.sleep(0.5) # give some time to put on hdfs
 
     dest = hpath.abspath(args.export_dir)
-    hdfs.put(args.export_dir, dest, user='profile')
+    hdfs.put(args.export_dir, dest, user='adalgo')
     # with hdfs.open(args.export_dir + "/xx.txt", mode='wt', user='profile') as f:
     #   print(model_json_str, file=f)
 

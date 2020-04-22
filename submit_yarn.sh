@@ -9,9 +9,9 @@ CONDAENV=tf2dis
 
 # export HADOOP_HDFS_HOME=/usr/hdp/2.5.6.0-40/hadoop-hdfs
 export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
-# export CLASSPATH=$(hadoop classpath --glob)
+export CLASSPATH=$(hadoop classpath --glob)
 # export LD_LIBRARY_PATH=${PATH}
-# export LD_LIBRARY_PATH=$(hadoop classpath):${JAVA_HOME}/jre/lib/amd64/server:/home/sdev/yongxi/env/tfhdfs/lib
+export LD_LIBRARY_PATH=$(hadoop classpath):${JAVA_HOME}/jre/lib/amd64/server:/home/sdev/yongxi/env/tfhdfs/lib
 export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
@@ -30,7 +30,7 @@ export LIB_JVM=./${CONDAENV}_zip/env/tfjvm
 # /usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so
 # /usr/lib/ams-hbase/lib/hadoop-native/libhdfs.so
 
-export HADOOP_USER_NAME=profile
+export HADOOP_USER_NAME=adalgo
 # export CLASSPATH=$(hadoop classpath --glob)
 
 # jar Package on the air
