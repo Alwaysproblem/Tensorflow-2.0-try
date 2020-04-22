@@ -55,7 +55,7 @@ EXPORT_DIR=/tmp/yongxi/tfoutput/mnist_export
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${MODEL_DIR}/*
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*
 
-sudo -u ${HADOOP_USER_NAME} ${SPARK_HOME}/bin/spark-submit \
+${SPARK_HOME}/bin/spark-submit \
                     --master yarn \
                     --deploy-mode cluster \
                     --queue ${QUEUE} \
