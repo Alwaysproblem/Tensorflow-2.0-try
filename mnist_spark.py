@@ -78,7 +78,7 @@ def main_fun(args, ctx):
   if ctx.job_name == 'chief':
     print("the saved model path:", args.export_dir)
     # multi_worker_model.save(args.export_dir)
-    multi_worker_model.save(args.export_dir)
+    multi_worker_model.save(args.export_dir + 'model.h5')
 
     dest = hpath.abspath(args.export_dir)
     hdfs.put(args.export_dir, dest, user=None)
