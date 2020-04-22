@@ -51,6 +51,7 @@ def main_fun(args, ctx):
 
   ds = tf.data.Dataset.from_generator(rdd_generator, (tf.float32, tf.float32), (tf.TensorShape([28, 28, 1]), tf.TensorShape([1])))
   ds = ds.batch(args.batch_size)
+  ds = ds.repeat(args.epochs)
 
   # this fails
   # callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=args.model_dir)]
@@ -78,7 +79,7 @@ def main_fun(args, ctx):
   if ctx.job_name == 'chief':
     print("the saved model path:", args.export_dir)
     # multi_worker_model.save(args.export_dir)
-    multi_worker_model.save(args.export_dir + '/model.h5')
+    multi_worker_model.save(args.export_dir)
 
     dest = hpath.abspath(args.export_dir)
     hdfs.put(args.export_dir, dest)
