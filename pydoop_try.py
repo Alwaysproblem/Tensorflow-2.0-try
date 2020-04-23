@@ -44,5 +44,4 @@ model.summary()
 model.compile('adam', loss=tf2.losses.BinaryCrossentropy())
 model.fit(X, y, epochs=1, batch_size = 10)
 
-with tf2.io.gfile.GFile('hdfs:///tmp/yongxi/tfoutput/model_export/', mode='w'):
-    model.save("save/1/")
+model.save("hdfs:///tmp/yongxi/tfoutput/model_export/save")
