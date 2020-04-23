@@ -7,14 +7,11 @@ def main_fun(args, ctx):
   import numpy as np
   import tensorflow as tf
   from tensorflowonspark import compat, TFNode
-  import pydoop.hdfs as hdfs
-  import json
-  import pydoop.hdfs.path as hpath
-  import time 
+  import os
+  from datetime import datetime
 
-  strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
-  # strategy = tf.distribute.MirroredStrategy()
-
+  # strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
+  strategy = tf.distribute.MirroredStrategy()
 
   def build_and_compile_cnn_model():
     model = tf.keras.Sequential([
@@ -55,9 +52,21 @@ def main_fun(args, ctx):
 
   # this fails
   # callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=args.model_dir)]
-  tf.io.gfile.makedirs(args.model_dir)
-  filepath = args.model_dir + "/weights-{epoch:04d}"
-  callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=filepath, verbose=1, save_weights_only=True)]
+  # tf.io.gfile.makedirs(args.model_dir)
+  # filepath = args.model_dir + "/weights-{epoch:04d}"
+  # callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=filepath, verbose=1, save_weights_only=True)]
+
+  if args.tensorboard != None and args.logdir == None:
+    raise ValueError("the log directory should be specified.")
+
+  if args.tensorboard == True:
+    tf.io.gfile.makedirs(args.model_dir)
+    # log_dir = args.model_dir + os.path.sep + f"tensorboard_{ctx.worker_num}"
+    callbacks = [tf.keras.callbacks.TensorBoard(log_dir=args.logdir, histogram_freq=1, profile_batch = 0)]
+    # callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=filepath, verbose=1, save_weights_only=True)]
+
+  else:
+    callbacks = []
 
   with strategy.scope():
     multi_worker_model = build_and_compile_cnn_model()
@@ -66,25 +75,16 @@ def main_fun(args, ctx):
   # so we need to ensure that all workers complete training before any of them run out of data from the RDD.
   # And given that Spark RDD partitions (and partition sizes) can be non-evenly divisible by num_workers,
   # we'll just stop training at 90% of the total expected number of steps.
-  steps_per_epoch = 60000 // args.batch_size
-  steps_per_epoch_per_worker = steps_per_epoch // ctx.num_workers
-  max_steps_per_worker = int(steps_per_epoch_per_worker * 0.9)
+  steps_per_epoch = 60000 / args.batch_size
+  steps_per_epoch_per_worker = steps_per_epoch / ctx.num_workers
+  max_steps_per_worker = steps_per_epoch_per_worker * 0.9
 
-  # multi_worker_model.fit(x=ds, epochs=args.epochs, steps_per_epoch=max(1, max_steps_per_worker))
-  multi_worker_model.fit(x=ds, epochs=args.epochs, steps_per_epoch=max(1, max_steps_per_worker), callbacks=callbacks)
+  # multi_worker_model.fit(x=ds, epochs=args.epochs, steps_per_epoch=max_steps_per_worker)
+  multi_worker_model.fit(x=ds, epochs=args.epochs, steps_per_epoch=max_steps_per_worker, callbacks=callbacks)
 
   # from tensorflow_estimator.python.estimator.export import export_lib
   # export_dir = export_lib.get_timestamped_export_dir(args.export_dir)
   # compat.export_saved_model(multi_worker_model, export_dir, ctx.job_name == 'chief')
-  if ctx.job_name == 'chief':
-    print("the saved model path:", args.export_dir)
-    # multi_worker_model.save(args.export_dir)
-    multi_worker_model.save(args.export_dir)
-
-    dest = hpath.abspath(args.export_dir)
-    hdfs.put(args.export_dir, dest)
-    # with hdfs.open(args.export_dir + "/xx.txt", mode='wt', user='profile') as f:
-    #   print(model_json_str, file=f)
 
   # terminating feed tells spark to skip processing further partitions
   tf_feed.terminate()
@@ -108,6 +108,7 @@ if __name__ == '__main__':
   parser.add_argument("--model_dir", help="path to save checkpoint", default="mnist_model")
   parser.add_argument("--export_dir", help="path to export saved_model", default="mnist_export")
   parser.add_argument("--tensorboard", help="launch tensorboard process", action="store_true")
+  parser.add_argument("--logdir", help="the path of tensorboard", action="store", type=str, default=None)
 
   args = parser.parse_args()
   print("args:", args)
@@ -120,8 +121,8 @@ if __name__ == '__main__':
   images_labels = sc.textFile(args.images_labels).map(parse)
 
   cluster = TFCluster.run(sc, main_fun, args, args.cluster_size, num_ps=0, 
-                          tensorboard=args.tensorboard, input_mode=TFCluster.InputMode.SPARK, 
-                          master_node='chief')
+                            tensorboard=args.tensorboard, log_dir=args.logdir,
+                            input_mode=TFCluster.InputMode.SPARK, master_node='chief')
   # Note: need to feed extra data to ensure that each worker receives sufficient data to complete epochs
   # to compensate for variability in partition sizes and spark scheduling
   cluster.train(images_labels, args.epochs)
