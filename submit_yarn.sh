@@ -49,8 +49,8 @@ EPOCHS=10
 # and must obtain the write permission all the way of the path.
 # because tensorflow will be create recursively files and paths.
 INPUT_DATA=/user-profile/yongxi/spark/input/mnist/csv/train
-MODEL_DIR=/tmp/yongxi/tfoutput/mnist_model
-EXPORT_DIR=/tmp/yongxi/tfoutput/mnist_export
+MODEL_DIR=hdfs:///tmp/yongxi/tfoutput/mnist_model
+EXPORT_DIR=hdfs:///tmp/yongxi/tfoutput/mnist_export
 
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${MODEL_DIR}/*
 sudo -u ${HADOOP_USER_NAME} hadoop fs -rm -r -f -skipTrash ${EXPORT_DIR}/*

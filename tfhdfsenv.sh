@@ -33,4 +33,4 @@ export LIB_JVM=./${CONDAENV}_zip/env/tfjvm
 export HADOOP_USER_NAME=profile
 export CLASSPATH=$(hadoop classpath --glob)
 
-python
+# python
