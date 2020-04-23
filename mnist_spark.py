@@ -51,7 +51,7 @@ def main_fun(args, ctx):
 
   ds = tf.data.Dataset.from_generator(rdd_generator, (tf.float32, tf.float32), (tf.TensorShape([28, 28, 1]), tf.TensorShape([1])))
   ds = ds.batch(args.batch_size)
-  ds = ds.repeat(args.epochs)
+  ds = ds.repeat()
 
   # this fails
   # callbacks = [tf.keras.callbacks.ModelCheckpoint(filepath=args.model_dir)]
