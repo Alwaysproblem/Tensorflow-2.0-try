@@ -18,14 +18,14 @@ export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
 
 # set paths to libjvm.so, libhdfs.so, and libcuda*.so
-export LIB_HDFS=./custom_lib                                     # path to libhdfs.so, for TF acccess to HDFS
+export LIB_HDFS=/app/tflib                                                             # path to libhdfs.so, for TF acccess to HDFS
 # export LIB_HDFS=./${CONDAENV}_zip/env/tfhdfs/lib                                     # path to libhdfs.so, for TF acccess to HDFS
 # already upto hdfs:///user-profile/yongxi/spark/env/tfhdfs/lib
 # export LIB_JVM=hdfs:///user-profile/yongxi/spark/env/tfjvm                           # path to libjvm.so
 # # set paths to libjvm.so, libhdfs.so, and libcuda*.so
 # export LIB_HDFS=$HADOOP_PREFIX/lib/native/Linux-amd64-64
 # # already upto hdfs:///user-profile/yongxi/spark/env/tfjvm
-export LIB_JVM=$JAVA_HOME/jre/lib/amd64/server
+export LIB_JVM=${JAVA_HOME}/jre/lib/amd64/server
 # export LIB_JVM=./${CONDAENV}_zip/env/tfjvm
 
 # on the cluster the path for lihdfs.so and libjvm.so
@@ -73,7 +73,6 @@ ${SPARK_HOME}/bin/spark-submit \
                     --conf spark.executorEnv.CLASSPATH=${CLASSPATH} \
                     --conf spark.executorEnv.LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LIB_JVM}:${LIB_HDFS} \
                     --archives "../${CONDAENV}.zip#${CONDAENV}_zip" \
-                    --files "../custom_lib/" \
                     --jars ${TFCONNECTOR},${TFHADOOP} \
                     mnist_spark.py \
                         --cluster_size ${SPARK_WORKER_INSTANCES} \
@@ -83,3 +82,4 @@ ${SPARK_HOME}/bin/spark-submit \
                         --export_dir ${EXPORT_DIR}
                     # try_spark.py \
                     # --conf spark.task.maxFailures=1 \
+                    # --files "../custom_lib/" \
