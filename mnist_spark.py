@@ -12,8 +12,8 @@ def main_fun(args, ctx):
   import pydoop.hdfs.path as hpath
   import time 
 
-  strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
-  # strategy = tf.distribute.MirroredStrategy()
+  # strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
+  strategy = tf.distribute.MirroredStrategy()
 
 
   def build_and_compile_cnn_model():
