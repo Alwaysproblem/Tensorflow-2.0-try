@@ -12,7 +12,6 @@ export HADOOP_HOME=/usr/hdp/2.5.6.0-40/hadoop
 export CLASSPATH=$(hadoop classpath --glob)
 # export LD_LIBRARY_PATH=${PATH}
 # export LD_LIBRARY_PATH=${PATH}:${CLASSPATH}:${JAVA_HOME}/jre/lib/amd64/server:/home/sdev/yongxi/env/tfhdfs/lib
-export LD_LIBRARY_PATH=${PATH}:${CLASSPATH}
 export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
 export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
@@ -27,6 +26,8 @@ export LIB_HDFS=/app/tflib                                                      
 # # already upto hdfs:///user-profile/yongxi/spark/env/tfjvm
 export LIB_JVM=${JAVA_HOME}/jre/lib/amd64/server
 # export LIB_JVM=./${CONDAENV}_zip/env/tfjvm
+
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LIB_JVM}:${LIB_HDFS}
 
 # on the cluster the path for lihdfs.so and libjvm.so
 # /usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so
