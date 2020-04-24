@@ -12,8 +12,8 @@ def main_fun(args, ctx):
   import pydoop.hdfs.path as hpath
   import time 
 
-  # strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
-  strategy = tf.distribute.MirroredStrategy()
+  strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
+  # strategy = tf.distribute.MirroredStrategy()
 
 
   def build_and_compile_cnn_model():
@@ -49,7 +49,13 @@ def main_fun(args, ctx):
       else:
         return
 
+  options = tf.data.Options()
+  options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.OFF
+  # options.experimental_distribute.auto_shard_policy = tf.data.experimental.AutoShardPolicy.DATA
+  # link 
+
   ds = tf.data.Dataset.from_generator(rdd_generator, (tf.float32, tf.float32), (tf.TensorShape([28, 28, 1]), tf.TensorShape([1])))
+  ds = ds.with_options(options)
   ds = ds.batch(args.batch_size)
   ds = ds.repeat()
 
