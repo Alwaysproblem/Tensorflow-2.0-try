@@ -34,7 +34,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${LIB_JVM}:${LIB_HDFS}
 # /usr/hdp/2.5.6.0-40/usr/lib/libhdfs.so
 # /usr/lib/ams-hbase/lib/hadoop-native/libhdfs.so
 
-export HADOOP_USER_NAME=profile
+export HADOOP_USER_NAME=adalgo
 
 # jar Package on the air
 TFCONNECTOR=hdfs:///user-profile/yongxi/spark/env/jars/spark-tensorflow-connector_2.11-1.15.0.jar
