@@ -2,7 +2,7 @@ set -ex
 
 # set environment variables (if not already done)
 # conda env
-CONDAENV=tf2dis
+CONDAENV=tflatest
 
 # /usr/hdp/2.5.6.0-40/hadoop/lib/native
 # /usr/hdp/2.5.6.0-40/hadoop/libexec/hadoop-config.sh
