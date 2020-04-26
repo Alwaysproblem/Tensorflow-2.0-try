@@ -10,7 +10,8 @@ def main_fun(args, ctx):
   import pydoop.hdfs as hdfs
   import json
   import pydoop.hdfs.path as hpath
-  import time 
+  import time
+  time.sleep(1)
 
   strategy = tf.distribute.experimental.MultiWorkerMirroredStrategy()
   # strategy = tf.distribute.MirroredStrategy()
