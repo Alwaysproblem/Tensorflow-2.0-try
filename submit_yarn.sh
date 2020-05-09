@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 set -ex
 
 # set environment variables (if not already done)
@@ -14,7 +15,7 @@ export CLASSPATH=$(hadoop classpath --glob)
 # export LD_LIBRARY_PATH=${PATH}:${CLASSPATH}:${JAVA_HOME}/jre/lib/amd64/server:/home/sdev/yongxi/env/tfhdfs/lib
 export PYSPARK_PYTHON="./${CONDAENV}_zip/${CONDAENV}/bin/python"
 export QUEUE=adx
-export SPARK_HOME=/home/sdev/yongxi/spark-2.4.4-bin-hadoop2.7
+export SPARK_HOME=/home/sdev/yongxi/env/spark-2.4.4-bin-hadoop2.7
 
 # set paths to libjvm.so, libhdfs.so, and libcuda*.so
 # export LIB_HDFS=./custom_lib                                                             # path to libhdfs.so, for TF acccess to HDFS

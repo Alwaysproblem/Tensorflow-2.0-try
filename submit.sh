@@ -1,3 +1,4 @@
+#!/usr/bin/bash
 export MASTER=spark://$(hostname):7077
 # export SPARK_WORKER_INSTANCES=5
 export SPARK_WORKER_INSTANCES=3
